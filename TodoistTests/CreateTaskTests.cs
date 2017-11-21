@@ -5,6 +5,7 @@ using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
 using OpenQA.Selenium.Remote;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace TodoistTests
@@ -23,7 +24,8 @@ namespace TodoistTests
             capabilities.SetCapability(MobileCapabilityType.PlatformName, "Android");
             capabilities.SetCapability(MobileCapabilityType.PlatformVersion, "5.1.0");
             capabilities.SetCapability(MobileCapabilityType.DeviceName, "Android");
-            capabilities.SetCapability(MobileCapabilityType.App, "C:\\Users\\ITAI\\git\\Todoist\\TodoistTests\\Todoist_com.todoist.apk");
+            string folder = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+            capabilities.SetCapability(MobileCapabilityType.App, folder + @"\Todoist_com.todoist.apk");
             String activity = "com.todoist.activity.HomeActivity";
             capabilities.SetCapability("appPackage", "com.todoist");
             capabilities.SetCapability("appActivity", activity);
