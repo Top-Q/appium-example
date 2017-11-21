@@ -14,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 
@@ -21,7 +22,7 @@ public class CreateTaskTests {
 
 	private static final String EMAIL = "itai.agmon@top-q.co.il";
 	private static final String PASSWORD = "secret";
-	private AndroidDriver driver;
+	private AndroidDriver<MobileElement> driver;
 
 	@Before
 	public void setUp() throws MalformedURLException {
@@ -29,14 +30,16 @@ public class CreateTaskTests {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(MobileCapabilityType.VERSION, "1.4.0");
 		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-		capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "5.1.0");
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "6.0.1");
 		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android");
 		capabilities.setCapability(MobileCapabilityType.APP, apkFile.getAbsolutePath());
 		String activity = "com.todoist.activity.HomeActivity";
-		capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, "com.todoist");
-		capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY, activity);
-		capabilities.setCapability(MobileCapabilityType.APP_WAIT_ACTIVITY, "com.todoist.activity.WelcomeActivity");
-		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		capabilities.setCapability("appPackage", "com.todoist");
+		capabilities.setCapability("appActivity", activity);
+		capabilities.setCapability("appWaitActivity", "com.todoist.activity.WelcomeActivity");
+		capabilities.setCapability("newCommandTimeout", "600");
+		
+		driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 	}
 
@@ -50,7 +53,6 @@ public class CreateTaskTests {
 
 		// *** Login Activity ****
 		driver.findElement(By.id("log_in_email")).sendKeys(EMAIL);
-		;
 		driver.findElementById("log_in_password").sendKeys(PASSWORD);
 		driver.findElementById("btn_log_in").click();
 
@@ -73,8 +75,7 @@ public class CreateTaskTests {
 		
 
 		// Searching for the newly created item
-		List<WebElement> items = driver.findElements(By
-				.xpath("//android.widget.RelativeLayout[@resource-id='com.todoist:id/item']/android.widget.TextView"));
+		List<MobileElement> items = driver.findElements(By.xpath("//android.widget.RelativeLayout[@resource-id='com.todoist:id/item']/android.widget.TextView"));
 		boolean found = false;
 		for (WebElement item : items) {
 			System.out.println("Item: " + item.getText());
